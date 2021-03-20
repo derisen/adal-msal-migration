@@ -105,7 +105,7 @@ In v2.0, using the `https://login.microsoftonline.com/common` authority, will al
 
 ### Migrating from the AuthenticationContext to PublicClientApplication or ConfidentialClientApplication
 
-#### Constructing PublicClientApplication or ConfidentialClientAppliation
+#### Constructing PublicClientApplication or ConfidentialClientApplication
 
 When you use MSAL, you instantiate either a [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/initialize-public-client-application.md) or a [ConfidentialClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/initialize-confidential-client-application.md). This object models your app identity and is used to make your requests through whichever flow you want. With this object you will configure your client identity, redirect URI, default authority, the log level and more.
 
@@ -152,3 +152,10 @@ const cca = new msal.ConfidentialClientApplication(msalConfig)
 #### Logging
 
 To configure how MSAL logs it's activity you can specify the log level, callback and more in the configuration object passed during application instantiation as explained [here](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/configuration.md)
+
+
+## More information
+
+[Migrate applications to the Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-migration)
+
+Why update to Microsoft identity platform (v2.0)? https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison

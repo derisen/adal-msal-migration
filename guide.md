@@ -1,13 +1,24 @@
-initializing authority context
+Initialization
+(authority context)
 
-logging
-
-configuration parameters
-
+Configuration parameters
 (validating authority)
 
-promises not callbacks
+Public API
+(table)
 
-account, not user
+Scopes, not resources
+
+Promises, not callbacks
+
+Account, not user
+
+Logging
 
 Caching
+
+Errors
+
+Code samples
+
+More
