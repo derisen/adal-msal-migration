@@ -13,8 +13,6 @@ By using MSAL instead of ADAL:
 - Supporting [Conditional Access]() is easier.
 - You benefit from innovation. Because all Microsoft development efforts are now focused on MSAL, no new features will be implemented in ADAL.
 
-MSAL is now the recommended authentication library for use with the [Microsoft identity platform]().
-
 ## Frequently asked questions (FAQ)
 
 [Migrate applications to the Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-migration)

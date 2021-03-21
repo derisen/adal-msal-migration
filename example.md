@@ -196,7 +196,6 @@ The logic used by Azure AD is the following:
 - For MSAL (v2.0 endpoint) asking an access token for a resource accepting v2.0 tokens, aud=resource.AppId
 - For MSAL (v2.0 endpoint) asking an access token for a resource accepting a v1.0 access token (which is the case above), Azure AD parses the desired audience from the requested scope by taking everything before the last slash and using it as the resource identifier. Therefore if https:\//database.windows.net expects an audience of "https://database.windows.net/", you'll need to request a scope of https:\//database.windows.net//.default. See also issue #[747](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/issues/747): Resource url's trailing slash is omitted, which caused sql auth failure #747
 
-
 ### Scopes to request access to all the permissions of a v1.0 application
 
 For instance, if you want to acquire a token for all the static scopes of a v1.0 application, one would need to use
