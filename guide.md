@@ -36,7 +36,7 @@ This section outlines the differences between ADAL Node and MSAL Node. You will 
 
 ### Code Comparison
 
-The snippet below demonstrates a confidential client web app written in Express.js and secured with ADAL Node. The web app performs a sign-in when a user hits the authentication route '', and then displays ID token obtained from Azure AD.
+The snippet below demonstrates a confidential client web app written in Express.js and secured with ADAL Node. The web app performs a sign-in when a user hits the authentication route `/auth`, and then displays ID token obtained from Azure AD.
 
 ```javascript
 var express = require('express');
@@ -192,6 +192,8 @@ app.get('/redirect', (req, res) => {
 app.listen(SERVER_PORT, () => console.log(`Msal Node Auth Code Sample app listening on port ${SERVER_PORT}!`))
 ```
 
+EXPLANATION
+
 ### Initialization
 
 In ADAL Node, you initialize an `AuthenticationContext` object, which then exposes the methods you can use in different authentication grants/flows (e.g. `acquireTokenWithAuthorizationCode` for web apps). When initializing, the only mandatory parameter is **authority URI**:
@@ -247,9 +249,9 @@ var options = {
 var authenticationContex = new adal.AuthenticationContext(authority, validateAuthority, cache);
 ```
 
-* authority
-* validateAuthority
-* cache
+- authority
+- validateAuthority
+- cache
 
 MSAL Node on the other hand uses a configuration object that contains the following fields:
 
@@ -273,7 +275,7 @@ const msalConfig = {
 
 ### Logging in MSAL Node
 
-In ADAL Node, you configure logging seperately at any place in your code:
+In ADAL Node, you configure logging separately at any place in your code:
 
 ```javascript
 var adal = require('adal-node');
@@ -354,7 +356,7 @@ However, some methods in ADAL Node are deprecated, while MSAL Node offers new me
 
 #### Scopes, not resources
 
-When working with ADAL Node, you were likely using Azure AD v1.0 endpoint. MSAL Node on the other hand is built for v2.0 endpoint. An important difference between v1.0 vs. v2.0 endpoints is about how the resources are accessed. v2.0 endpoint employs a scope-centric model to access resources.
+When working with ADAL Node, you were likely using Azure AD v1.0 endpoint. MSAL Node on the other hand is built for v2.0 endpoint. An important difference between v1.0 vs. v2.0 endpoints is about how the resources are accessed. In ADAL Node, you would request an access token for a resource:
 
 ```javascript
   authenticationContext.acquireTokenWithAuthorizationCode(
@@ -364,17 +366,11 @@ When working with ADAL Node, you were likely using Azure AD v1.0 endpoint. MSAL 
     clientId,
     clientSecret,
     function (err, response) {
-      var errorMessage = '';
-
-      if (err) {
-        errorMessage = 'error: ' + err.message + '\n';
-      }
-
-      errorMessage += 'response: ' + JSON.stringify(response);
-      res.send(errorMessage);
-    }
+      // do something with auth response
   );
 ```
+
+ v2.0 endpoint employs a scope-centric model to access resources. Thus when you request an access token for a resource, you only acquire it for a particular scope of that resource:
 
 ```javascript
     const tokenRequest = {
@@ -384,11 +380,9 @@ When working with ADAL Node, you were likely using Azure AD v1.0 endpoint. MSAL 
     };
 
     pca.acquireTokenByCode(tokenRequest).then((response) => {
-        console.log("\nResponse: \n:", response);
-        res.sendStatus(200);
+        // do something with auth response
     }).catch((error) => {
         console.log(error);
-        res.status(500).send(error);
     });
 ```
 
