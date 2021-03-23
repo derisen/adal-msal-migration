@@ -58,7 +58,7 @@ var authorityUrl = sampleParameters.authorityHostUrl + '/' + sampleParameters.te
 var resource = '00000002-0000-0000-c000-000000000000';
 var userId = '';
 
-//turnOnLogging();
+turnOnLogging();
 
 var cache = new MemoryCache();
 
