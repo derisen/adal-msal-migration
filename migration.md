@@ -151,7 +151,6 @@ const cca = new msal.ConfidentialClientApplication(msalConfig)
 
 To configure how MSAL logs it's activity you can specify the log level, callback and more in the configuration object passed during application instantiation as explained [here](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/configuration.md)
 
-
 ## More information
 
 [Migrate applications to the Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-migration)

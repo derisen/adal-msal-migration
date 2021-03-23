@@ -24,7 +24,7 @@ Many developers have built and deployed applications using the [Active Directory
 - You can authenticate a broader set of identities:
   - Azure AD identities (i.e. work and school accounts)
   - personal Microsoft accounts
-  - Social and local accounts by using Azure AD B2C
+  - Social and local accounts by using [Azure AD B2C](https://docs.microsoft.com/azure/active-directory-b2c/overview)
 - Your users will get the best single-sign-on experience.
 - Your application can enable incremental consent.
 - Supporting [Conditional Access](https://docs.microsoft.com/azure/active-directory/develop/v2-conditional-access-dev-guide) is easier.
@@ -32,11 +32,11 @@ Many developers have built and deployed applications using the [Active Directory
 
 ## Differences between ADAL and MSAL apps
 
-This section outlines the differences between ADAL Node and MSAL Node. You will first see the full code for an express.js web application acquiring token for a resource with ADAL Node and then the same application with MSAL Node. After comparison, the code will be discussed in depth.
+This section outlines the differences between ADAL Node and MSAL Node. You will first see the full code for an express.js web application acquiring token for a resource with ADAL Node and then the same application with MSAL Node. After the comparison, aspects of the code will be discussed in depth.
 
 ### Code Comparison
 
-The snippet below demonstrates a confidential client web app written in Express.js and secured with ADAL Node. The web app performs a sign-in when a user hits the authentication route `/auth`, and then displays ID token obtained from Azure AD.
+The snippet below demonstrates a confidential client web app written in Express.js and secured with ADAL Node. The web app performs a sign-in when a user hits the authentication route `/auth`, and then displays tokens obtained from Azure AD.
 
 ```javascript
 var express = require('express');
@@ -58,12 +58,12 @@ logging.setLoggingOptions({
   loggingWithPII: false  // Determine if you want to log personal identification information. The default value is false.
 });
 
-var clientId = 'dbf79ff8-ef8a-4acb-86e6-3c1725d04d46';
-var clientSecret = 'aX88v~q_TgI~324LaQ4C~477-_VWm7vus3'
+var clientId = 'Enter_the_Application_Id_Here';
+var clientSecret = 'Enter_the_Client_Secret_Here'
 var authorityHostUrl = 'https://login.microsoftonline.com';
-var tenant = 'msaltestingjs.onmicrosoft.com';
+var tenant = 'Enter_the_Tenant_Info_Here';
 var authorityUrl = authorityHostUrl + '/' + tenant;
-var redirectUri = 'http://localhost:3000/getAToken';
+var redirectUri = 'http://localhost:3000/redirect';
 var resource = 'https://graph.microsoft.com';
 
 var templateAuthzUrl = 'https://login.microsoftonline.com/' +
@@ -97,7 +97,7 @@ app.get('/auth', function (req, res) {
 // After consent is granted AAD redirects here.  The ADAL library is invoked via the
 // AuthenticationContext and retrieves an access token that can be used to access the
 // user owned resource.
-app.get('/getAToken', function (req, res) {
+app.get('/redirect', function (req, res) {
   if (app.locals.state != req.query.state) {
     res.send('error: state does not match');
   }
@@ -111,14 +111,10 @@ app.get('/getAToken', function (req, res) {
     clientId,
     clientSecret,
     function (err, response) {
-      var errorMessage = '';
-
       if (err) {
-        errorMessage = 'error: ' + err.message + '\n';
+        res.send(err);
       }
-
-      errorMessage += 'response: ' + JSON.stringify(response);
-      res.send(errorMessage);
+      res.send(response);
     }
   );
 });
@@ -140,7 +136,7 @@ const REDIRECT_URI = "http://localhost:3000/redirect";
 const config = {
     auth: {
         clientId: "Enter_the_Application_Id_Here",
-        authority: "Enter_the_Cloud_Instance_Id_HereEnter_the_Tenant_Info_Here",
+        authority: "https://login.microsoftonline.com/Enter_the_Tenant_Info_Here",
         clientSecret: "Enter_the_Client_Secret_Here"
     },
     system: {
@@ -180,8 +176,7 @@ app.get('/redirect', (req, res) => {
     };
 
     pca.acquireTokenByCode(tokenRequest).then((response) => {
-        console.log("\nResponse: \n:", response);
-        res.sendStatus(200);
+        res.send(response);
     }).catch((error) => {
         console.log(error);
         res.status(500).send(error);
@@ -204,7 +199,7 @@ var adal = require('adal-node');
 var authenticationContex = new adal.AuthenticationContext("https://login.microsoftonline.com/common");
 ```
 
-In MSAL Node, you have two alternatives instead: If you are building an a mobile app or a desktop app, you instantiate a `PublicClientApplication` object. The constructor expects a [configuration object](#configuration-options) that contains the `clientId` parameter at the very least. MSAL defaults the authority URI to `https://login.microsoftonline.com/common`.
+In MSAL Node, you have two alternatives instead: If you are building a mobile app or a desktop app, you instantiate a `PublicClientApplication` object. The constructor expects a [configuration object](#configuration-options) that contains the `clientId` parameter at the very least. MSAL defaults the authority URI to `https://login.microsoftonline.com/common`.
 
 ```javascript
 const msal = require('@azure/msal-node');
@@ -235,7 +230,7 @@ See for more: [Initialization of MSAL Node](https://github.com/AzureAD/microsoft
 
 ### Configuration options
 
-When building apps on Microsoft identity platform, your app will contain many parameters related to authentication. In ADAL Node, 
+When building apps on Microsoft identity platform, your app will contain many parameters related to authentication. In ADAL Node, the `AuthenticationContext` object has a limited number of configuration parameters:
 
 ```javascript
 var adal = require('adal-node');
@@ -249,13 +244,16 @@ var options = {
 var authenticationContex = new adal.AuthenticationContext(authority, validateAuthority, cache);
 ```
 
-- authority
-- validateAuthority
-- cache
+- authority:
+- validateAuthority:
+- cache:
+
+ADAL has a flag to enable or disable authority validation.  Authority validation is a feature in ADAL/MSAL, that prevents your code from requesting tokens from a potentially malicious authority. ADAL retrieves a list of authorities known to Microsoft and validates the user provided authority against the retrieved set of authorities. Use of the flag is shown in the code snippet below.
 
 MSAL Node on the other hand uses a configuration object that contains the following fields:
 
 ```javascript
+const msal = require('@azure/msal-node');
 
 const msalConfig = {
     auth: {
@@ -271,7 +269,12 @@ const msalConfig = {
         // logging related options
     }
 }
+
+
+const cca = new msal.ConfidentialClientApplication(msalConfig);
 ```
+
+MSAL does not have a flag to disable authority validation, authorities are always validated. MSAL now compares your requested authority against a list of authorities known to Microsoft or a list of authorities you've specified in your configuration. Like illustrated in the code snippet below.
 
 ### Logging in MSAL Node
 
@@ -352,17 +355,23 @@ However, some methods in ADAL Node are deprecated, while MSAL Node offers new me
 | acquireTokenWithClientCertificate | N/A                             |                                   |
 | N/A                               | getAuthCodeUrl                  |                                   |
 
+- The methods to acquire tokens using the device code flow have been merged into `acquireTokenByDeviceCode` from the `acquireUserCode`, `acquireTokenWithDeviceCode` and `acquireToken` used to acquire a token via device code in MSAL.
+
+- The use of a certificate as a credential to acquire a token has been moved from the `acquireTokenWithClientCertificate` and has been included in as one of the modes of authentication in the `ConfidentialApplication` application.
+
+- The method to acquire and renew tokens silently without prompting users is named `acquireToken` in ADAL.js. In MSAL.js, this method is named `acquireTokenSilent` to be more descriptive of this functionality.
+
 ### Other notable differences
 
 #### Scopes, not resources
 
-When working with ADAL Node, you were likely using Azure AD v1.0 endpoint. MSAL Node on the other hand is built for v2.0 endpoint. An important difference between v1.0 vs. v2.0 endpoints is about how the resources are accessed. In ADAL Node, you would request an access token for a resource:
+When working with ADAL Node, you were likely using the Azure AD v1.0 endpoint. MSAL Node on the other hand is built for the v2.0 endpoint. An important difference between v1.0 vs. v2.0 endpoints is about how the resources are accessed. In ADAL Node, you would request an access token for a resource as shown below:
 
 ```javascript
   authenticationContext.acquireTokenWithAuthorizationCode(
     req.query.code,
     redirectUri,
-    resource,
+    'https://graph.microsoft.com',
     clientId,
     clientSecret,
     function (err, response) {
@@ -370,12 +379,12 @@ When working with ADAL Node, you were likely using Azure AD v1.0 endpoint. MSAL 
   );
 ```
 
- v2.0 endpoint employs a scope-centric model to access resources. Thus when you request an access token for a resource, you only acquire it for a particular scope of that resource:
+The v2.0 endpoint employs a scope-centric model to access resources. Thus when you request an access token for a resource, you only acquire it for a particular scope of that resource:
 
 ```javascript
     const tokenRequest = {
         code: req.query.code,
-        scopes: ["user.read"],
+        scopes: ["https://graph.microsoft.com/User.Read"],
         redirectUri: REDIRECT_URI,
     };
 
@@ -385,6 +394,8 @@ When working with ADAL Node, you were likely using Azure AD v1.0 endpoint. MSAL 
         console.log(error);
     });
 ```
+
+When building applications using v1.0, you needed to register the full set of permissions(*static scopes*) required by the application for the user to consent to at the time of login. In v2.0, you can use the scope parameter to request the permissions at the time you want them. These are called *dynamic scopes*. This allows the user to provide incremental consent to scopes. So if at the beginning you just want the user to sign in to your application and you don’t need any kind of access, you can do so. If later you need the ability to read the calendar of the user, you can then request the calendar scope in the acquireToken methods and get the user's consent. For example:
 
 See for more: [Resources and scopes](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/resources-and-scopes.md)
 
@@ -419,7 +430,7 @@ In MSAL Node, promises are used instead:
     });
 ```
 
-You can also use the **async/await** syntax in ES6:
+You can also use the **async/await** syntax that comes with ES6:
 
 ```javascript
     try {
@@ -442,7 +453,7 @@ See for more: [Accounts in MSAL Node](https://github.com/AzureAD/microsoft-authe
 
 ## More Information
 
-[Scopes, permissions, and consent in the Microsoft identity platform](https://docs.microsoft.com/azure/active-directory/develop/v2-permissions-and-consent)
-[Migrate applications to the Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-migration)
 [Why update to Microsoft identity platform (v2.0)?](https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison)
-[Code samples]()
+[Migrate applications to the Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-migration)
+[Scopes, permissions, and consent in the Microsoft identity platform](https://docs.microsoft.com/azure/active-directory/develop/v2-permissions-and-consent)
+[Code samples](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/samples/msal-node-samples/standalone-samples)
