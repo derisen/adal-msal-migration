@@ -18,21 +18,21 @@ logging.setLoggingOptions({
 });
 
 var clientId = 'dbf79ff8-ef8a-4acb-86e6-3c1725d04d46';
-var clientSecret = 'aX88v~q_TgI~324LaQ4C~477-_VWm7vus3'
+var clientSecret = 'kW2S~TMK617-Ev2y19yx_smgTzJA_P53Zi'
 var authorityHostUrl = 'https://login.microsoftonline.com';
-var tenant = 'msaltestingjs.onmicrosoft.com';
+var tenant = 'common';
 var authorityUrl = authorityHostUrl + '/' + tenant;
-var redirectUri = 'http://localhost:3000/getAToken';
-var resource = 'https://graph.microsoft.com';
+var redirectUri = 'http://localhost:3000/redirect';
+var scope = 'https://graph.microsoft.com/user.read';
 
 var templateAuthzUrl = 'https://login.microsoftonline.com/' +
   tenant +
-  '/oauth2/authorize?response_type=code&client_id=' +
+  '/oauth2/v2.0/authorize?response_type=code&client_id=' +
   clientId +
   '&redirect_uri=' +
   redirectUri +
-  '&state=<state>&resource=' +
-  resource;
+  '&state=<state>&scope=' +
+  scope;
 
 function createAuthorizationUrl(state) {
   return templateAuthzUrl.replace('<state>', state);
@@ -56,7 +56,7 @@ app.get('/auth', function (req, res) {
 // After consent is granted AAD redirects here.  The ADAL library is invoked via the
 // AuthenticationContext and retrieves an access token that can be used to access the
 // user owned resource.
-app.get('/getAToken', function (req, res) {
+app.get('/redirect', function (req, res) {
   if (app.locals.state != req.query.state) {
     res.send('error: state does not match');
   }
@@ -66,7 +66,7 @@ app.get('/getAToken', function (req, res) {
   authenticationContext.acquireTokenWithAuthorizationCode(
     req.query.code,
     redirectUri,
-    resource,
+    scope,
     clientId,
     clientSecret,
     function (err, response) {

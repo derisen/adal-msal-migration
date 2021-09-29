@@ -3,8 +3,10 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
+        "@azure/msal-node": "*",
         "@microsoft/microsoft-graph-client": "^1.0.0",
         "adal-node": "^0.2.2",
-        "express": "^4.17.1"
+        "express": "^4.17.1",
+        "msal-express-wrapper": "github:azure-samples/msal-express-wrapper#1.0.0-beta.1"
     }
 }
