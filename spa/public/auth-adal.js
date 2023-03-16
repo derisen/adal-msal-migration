@@ -65,7 +65,6 @@ if (authContext.isCallback(window.location.hash)) {
     updateUI(authContext.getCachedUser());
 }
 
-
 function signIn() {
     authContext.login();
 }
