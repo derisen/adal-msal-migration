@@ -25,13 +25,7 @@ function getTokenWithMsal(tenantId) {
         scopes: ["https://graph.microsoft.com/.default"],
     };
 
-    return cca
-        .acquireTokenByClientCredential(clientCredentialRequest)
-        .then((response) => {
-            console.log(response);
-        }).catch((error) => {
-            console.log(error);
-        });
+    return cca.acquireTokenByClientCredential(clientCredentialRequest);
 }
 
 module.exports = getTokenWithMsal;

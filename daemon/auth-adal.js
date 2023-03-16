@@ -22,21 +22,15 @@ const adalConfig = {
     resource: 'https://graph.microsoft.com'
 };
 
-function getTokenWithAdal(tenantId) {
+function getTokenWithAdal(tenantId, callback) {
     var authorityUrl = 'https://login.microsoftonline.com/' + tenantId;
     var context = new AuthenticationContext(authorityUrl, true);
 
-    context.acquireTokenWithClientCredentials(
+    return context.acquireTokenWithClientCredentials(
         adalConfig.resource,
         adalConfig.clientId,
         adalConfig.clientSecret,
-        function (err, tokenResponse) {
-            if (err) {
-                console.log(err.stack);
-            } else {
-                console.log(tokenResponse);
-            }
-        }
+        callback
     );
 }
 

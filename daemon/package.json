@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:adal": "node adal-app.js",
-    "start:msal": "node msal-app.js",
-    "dev:adal": "nodemon adal-app.js",
-    "dev:msal": "nodemon msal-app.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "derisen",
   "license": "ISC",
