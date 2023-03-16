@@ -1,0 +1,24 @@
+{
+  "name": "adal-msal-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start:adal": "node adal-app.js",
+    "start:msal": "node msal-app.js",
+    "dev:adal": "nodemon adal-app.js",
+    "dev:msal": "nodemon msal-app.js"
+  },
+  "author": "derisen",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/msal-node": "^1.16.0",
+    "adal-node": "^0.2.4",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "handlebars": "^4.7.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.21"
+  }
+}

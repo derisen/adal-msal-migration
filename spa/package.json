@@ -1,5 +1,5 @@
 {
-  "name": "spa-sample",
+  "name": "adal-msal-spa",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -8,6 +8,8 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.34.0",
+    "adal-angular": "^1.0.18",
     "express": "^4.17.1"
   },
   "devDependencies": {

@@ -1,0 +1,8 @@
+<h1>{{title}}</h1>
+{{#if isAuthenticated }}
+<p>Hi {{username}}!</p>
+<a href="/logout">Sign out</a>
+{{else}}
+<p>Welcome to {{title}}</p>
+<a href="/login">Sign in</a>
+{{/if}}

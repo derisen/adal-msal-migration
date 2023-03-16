@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://alcdn.msauth.net/lib/1.0.18/js/adal.min.js"></script>
+    <!-- <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.34.0/js/msal-browser.min.js"></script> -->
+    <title>Microsoft identity platform</title>
+</head>
+
+<body>
+    <div>
+        <p id="welcomeMessage" style="visibility: hidden;"></p>
+        <button id="loginButton" onclick="signIn()">Login</button>
+        <button id="logoutButton" onclick="signOut()" style="visibility: hidden;">Logout</button>
+        <button id="tokenButton" onclick="getToken()" style="visibility: hidden;">Get Token</button>
+    </div>
+    <script type="text/javascript" src="./auth-adal.js"></script>
+    <!-- <script type="text/javascript" src="./auth-msal.js"></script> -->
+</body>
+
+</html>

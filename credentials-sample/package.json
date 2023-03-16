@@ -1,9 +1,0 @@
-{
-    "name": "application-name"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-      "@microsoft/microsoft-graph-client": "^1.0.0",
-      "adal-node": ">= 0.1.3"
-  }
-}

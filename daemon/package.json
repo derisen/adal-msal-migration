@@ -1,0 +1,22 @@
+{
+  "name": "adal-msal-daemon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:adal": "node adal-app.js",
+    "start:msal": "node msal-app.js",
+    "dev:adal": "nodemon adal-app.js",
+    "dev:msal": "nodemon msal-app.js"
+  },
+  "author": "derisen",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/msal-node": "^1.16.0",
+    "adal-node": "^0.2.4",
+    "yargs": "^17.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.21"
+  }
+}
