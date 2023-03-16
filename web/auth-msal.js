@@ -3,7 +3,7 @@ const express = require("express");
 const msal = require('@azure/msal-node');
 
 // Authentication parameters
-const config = {
+const msalConfig = {
     auth: {
         clientId: "Enter_the_Application_Id_Here",
         authority: "https://login.microsoftonline.com/Enter_the_Tenant_Info_Here",
@@ -36,7 +36,7 @@ router.use((req, res, next) => {
 
 router.get('/login', function (req, res, next) {
     // Initialize MSAL Node object using authentication parameters
-    const cca = new msal.ConfidentialClientApplication(config);
+    const cca = new msal.ConfidentialClientApplication(msalConfig);
 
     req.session.state = new msal.CryptoProvider().createNewGuid();
 
@@ -45,6 +45,7 @@ router.get('/login', function (req, res, next) {
         scopes: ["user.read"],
         redirectUri: REDIRECT_URI,
         state: req.session.state,
+        responseMode: "form_post"
     };
 
     // Request auth code, then redirect
@@ -57,7 +58,7 @@ router.get('/login', function (req, res, next) {
 });
 
 router.get('/logout', function (req, res, next) {
-    const logoutUri = `${msalConfig.auth.authority}/oauth2/v2.0/logout?post_logout_redirect_uri=${POST_LOGOUT_REDIRECT_URI}`;
+    const logoutUri = `${msalConfig.auth.authority}/oauth2/v2.0/logout?post_logout_redirect_uri=http://localhost:4000`;
 
     // end session with AAD
     req.session.destroy(() => {
@@ -67,7 +68,7 @@ router.get('/logout', function (req, res, next) {
 
 router.post('/redirect', function (req, res, next) {
     // Initialize MSAL Node object using authentication parameters
-    const cca = new msal.ConfidentialClientApplication(config);
+    const cca = new msal.ConfidentialClientApplication(msalConfig);
 
     // Use the auth code in redirect request to construct
     // a token request object
@@ -81,7 +82,9 @@ router.post('/redirect', function (req, res, next) {
     // Exchange the auth code for tokens
     cca.acquireTokenByCode(tokenRequest, req.body)
         .then((response) => {
-            res.send(response);
+            req.session.isAuthenticated = true;
+            req.session.username = response.account.username;
+            res.redirect("/");
         }).catch((error) => {
             next(error);
         });

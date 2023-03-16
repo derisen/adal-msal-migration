@@ -8,7 +8,7 @@ var clientId = 'Enter_the_Application_Id_Here';
 var clientSecret = 'Enter_the_Client_Secret_Here';
 var tenant = 'Enter_the_Tenant_Info_Here';
 var authorityUrl = 'https://login.microsoftonline.com/' + tenant;
-var redirectUri = 'http://localhost:3000/redirect';
+var redirectUri = 'http://localhost:4000/redirect';
 var resource = 'https://graph.microsoft.com';
 
 // Configure logging
@@ -23,7 +23,7 @@ adal.Logging.setLoggingOptions({
 // Auth code request URL template
 var templateAuthzUrl = 'https://login.microsoftonline.com/'
     + tenant + '/oauth2/authorize?response_type=code&client_id='
-    + clientId + '&redirect_uri=' + redirectUri
+    + clientId + '&response_mode=form_post' + '&redirect_uri=' + redirectUri
     + '&state=<state>&resource=' + resource;
 
 var router = express.Router();
@@ -54,7 +54,7 @@ router.get('/login', function (req, res, next) {
 });
 
 router.get('/logout', function (req, res, next) {
-    const logoutUri = "https://login.microsoftonline.com/" + tenant + "/oauth2/v2.0/logout";
+    const logoutUri = "https://login.microsoftonline.com/" + tenant + "/oauth2/v2.0/logout?post_logout_redirect_uri=http://localhost:4000";
 
     // Clear session
     req.session.destroy(() => {
@@ -80,7 +80,13 @@ router.post('/redirect', function (req, res, next) {
         clientId,
         clientSecret,
         function (err, response) {
-            res.send(response);
+            if (err) {
+                return next(err);
+            }
+
+            req.session.isAuthenticated = true;
+            req.session.username = response.userId;
+            res.redirect("/");
         }
     );
 });

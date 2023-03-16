@@ -1,3 +1,4 @@
+var path = require('path');
 var express = require("express");
 var session = require('express-session');
 
@@ -9,7 +10,7 @@ var app = express();
 
 // setup session middleware
 app.use(session({
-    secret: process.env.EXPRESS_SESSION_SECRET,
+    secret: "ENTER_SESSION_COOKIE_SECRET",
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -28,14 +29,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // setup auth middleware
-app.use(adalAuth());
-// app.use(msalAuth());
+app.use(adalAuth);
+// app.use(msalAuth);
 
-router.get('/', function (req, res, next) {
+app.get('/', function (req, res, next) {
     res.render('index', {
         title: 'Microsoft identity platform',
         isAuthenticated: req.session.isAuthenticated,
-        username: req.session.account?.username,
+        username: req.session.username,
     });
 });
 
